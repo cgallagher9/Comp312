@@ -12,6 +12,7 @@ string wait;
 
 cout<<"Hello, Dr. Butcher. This is my test file for assignment two. \nIt is written in C++ and hopefully fulfills your requirements for this assignment." <<endl;
 cout<<"Thanks!"<<endl;
+cout<<"\n\nLooks good to me.\n\t-Matt"<<endl;
 
 
 cin >> wait;
