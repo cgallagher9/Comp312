@@ -147,15 +147,13 @@ void userInteract(char gameBoard[][9], char solutionBoard[][9], string &boardNam
 
 		choose = atoi(choose_str.c_str());
 
-		switch(choose)
-		{
-			case 1:
-				break;
+		
+			if (choose == 1) break;
 
-			case 2:
-				loadSave (gameBoard, solutionBoard, boardName);
-				break;
-			case 3:
+			if (choose == 2) loadSave (gameBoard, solutionBoard, boardName);
+				
+			if (choose == 3)
+ 			{
  				cout << string(100, '\n' );
 				cout<<"\nWhat is Sudoku?"<<endl;
 				cin.ignore(1000, '\n');
@@ -166,11 +164,11 @@ void userInteract(char gameBoard[][9], char solutionBoard[][9], string &boardNam
 				cout<<"\nDon't worry; I'll tell you if you make a mistake! Good luck!\n";
 				cin.ignore();
 				userInteract(gameBoard, solutionBoard, boardName);
-				break;
-			case 4:
-				exit(0);
-				break;
-			default:
+ 			}
+			if (choose == 4) exit(0);
+				
+			if (choose != 1 && choose !=2 && choose !=3 && choose != 4)
+			{
 				cout<<"Please make a valid choice."<<endl;
 				getline(cin,choose_str);
 				while (choose_str == "")
@@ -178,7 +176,7 @@ void userInteract(char gameBoard[][9], char solutionBoard[][9], string &boardNam
 					getline(cin,choose_str);
 				}
 				choose = atoi(choose_str.c_str());
-				break;
+			}
 		}
 		return;
 	
@@ -233,80 +231,11 @@ void displayBoard(char gameBoard[][9])
 		}
 	}
 
-/*
-	//display across row 1 (row header, each square, and line break)
-	cout << "1:" << gameBoard[0][0] << "  " << gameBoard[0][1]
-	     << " " << gameBoard[0][2] << "| " << gameBoard[0][3]
-	     << " " << gameBoard[0][4] << "  " << gameBoard[0][5]
-	     << "|" << gameBoard[0][6] << "  " << gameBoard[0][7]
-	     << " " << gameBoard[0][8] << endl;
 
-	//display across row 2
-	cout << "2: " << gameBoard[1][0] << " " << gameBoard[1][1]
-	     << " " << gameBoard[1][2] << "|" << gameBoard[1][3]
-	     << " " << gameBoard[1][4] << " " << gameBoard[1][5]
-	     << "|" << gameBoard[1][6] << " " << gameBoard[1][7]
-	     << " " << gameBoard[1][8] << endl;
-
-	//display across row 3
-	cout << "3: " << gameBoard[2][0] << " " << gameBoard[2][1]
-	     << " " << gameBoard[2][2] << "|" << gameBoard[2][3]
-	     << " " << gameBoard[2][4] << " " << gameBoard[2][5]
-	     << "|" << gameBoard[2][6] << " " << gameBoard[2][7]
-	     << " " << gameBoard[2][8] << endl;
-
-	//3 X 3 line separator
-	cout << "   -----+-----+-----" << endl;
-
-	//display across row 4
-	cout << "4: " << gameBoard[3][0] << " " << gameBoard[3][1]
-	     << " " << gameBoard[3][2] << "|" << gameBoard[3][3]
-	     << " " << gameBoard[3][4] << " " << gameBoard[3][5]
-	     << "|" << gameBoard[3][6] << " " << gameBoard[3][7]
-	     << " " << gameBoard[3][8] << endl;
-
-	//display across row 5
-	cout << "5: " << gameBoard[4][0] << " " << gameBoard[4][1]
-	     << " " << gameBoard[4][2] << "|" << gameBoard[4][3]
-	     << " " << gameBoard[4][4] << " " << gameBoard[4][5]
-	     << "|" << gameBoard[4][6] << " " << gameBoard[4][7]
-	     << " " << gameBoard[4][8] << endl;
-
-	//display across row 6
-	cout << "6: " << gameBoard[5][0] << " " << gameBoard[5][1]
-	     << " " << gameBoard[5][2] << "|" << gameBoard[5][3]
-	     << " " << gameBoard[5][4] << " " << gameBoard[5][5]
-	     << "|" << gameBoard[5][6] << " " << gameBoard[5][7]
-	     << " " << gameBoard[5][8] << endl;
-
-	//3 X 3 line separator
-	cout << "   -----+-----+-----" << endl;
-
-	//display across row 7
-	cout << "7: " << gameBoard[6][0] << " " << gameBoard[6][1]
-	     << " " << gameBoard[6][2] << "|" << gameBoard[6][3]
-	     << " " << gameBoard[6][4] << " " << gameBoard[6][5]
-	     << "|" << gameBoard[6][6] << " " << gameBoard[6][7]
-	     << " " << gameBoard[6][8] << endl;
-
-	//display across row 8
-	cout << "8: " << gameBoard[7][0] << " " << gameBoard[7][1]
-	     << " " << gameBoard[7][2] << "|" << gameBoard[7][3]
-	     << " " << gameBoard[7][4] << " " << gameBoard[7][5]
-	     << "|" << gameBoard[7][6] << " " << gameBoard[7][7]
-	     << " " << gameBoard[7][8] << endl;
-
-	//display across row 9
-	cout << "9: " << gameBoard[8][0] << " " << gameBoard[8][1]
-	     << " " << gameBoard[8][2] << "|" << gameBoard[8][3]
-	     << " " << gameBoard[8][4] << " " << gameBoard[8][5]
-	     << "|" << gameBoard[8][6] << " " << gameBoard[8][7]
-	     << " " << gameBoard[8][8] << endl;
-	     */
 }
 
 /*
- So, this part of the code will edit one square of the table. It will
+ Edit one square of the table. It will
  do this by asking the user for the column header and the row header.
  */
 
@@ -358,12 +287,12 @@ bool inputSquare(char gameBoard[][9], char gameBoard_copy[][9], char solutionBoa
 	}
 
 	//if square is full in its initialized form, display "you cannot change that value" message
-	/*if(gameBoard_copy[rowHeaderInt][columnHeaderInt] != 0)
+	if(gameBoard_copy[rowHeaderInt][columnHeaderInt] != 0)
 	{
 		cout << "\nYou cannot change the value in " << rowHeader << columnHeader << ".\n"<< endl;
 		inputSquare(gameBoard, gameBoard_copy, solutionBoard, boardName);
 	}
-	*/
+	
 	//else
 	//{
 		//ask for the value and take in the user input
