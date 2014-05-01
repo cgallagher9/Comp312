@@ -1,4 +1,4 @@
-﻿//Sudoku in C++ by Connor Gallagher
+//Sudoku in C++ by Connor Gallagher
 
 #include <iostream>
 #include <ios>
@@ -9,16 +9,16 @@
 using namespace std;
 
 //function declarations
-void readFile(char gameBoard[][9], char solutionBoard[][9], char gameBoard_copy[][9], string boardName);
+void readFile(char gameBoard[][9], char solutionBoard[][9], char gameBoard_copy[][9], string boardName, bool &saveLoaded);
 void writeFile(char gameBoard[][9], string boardName);
 void displayBoard(char gameBoard[][9]);
-void userInteract(char gameBoard[][9], char solutionBoard[][9], string &boardName);
+void userInteract(char gameBoard[][9], char solutionBoard[][9], string &boardName, bool &saveLoaded);
 bool inputSquare(char gameBoard[][9], char gameBoard_copy[][9], char solutionBoard[][9], string boardName);
 bool displayOption(char gameBoard[][9]);
 bool checkInput(char gameBoard[][9], char solutionBoard[][9], int colHeadInt, int rowHeadInt, char value, string boardName);
 int endOfGame(char gameBoard[][9], char  solutionBoard[][9]);
 int displayArray(char gameBoard[][9], char gameBoard_copy[][9], char solutionBoard[][9]);
-bool loadSave (char gameBoard[][9], char solutionBoard[][9], string &boardName);
+bool loadSave (char gameBoard[][9], char solutionBoard[][9], string &boardName, bool &saveLoaded);
 
 int main()
 {
@@ -31,6 +31,7 @@ int main()
 	char solutionBoard[9][9]; 	//holds the finished sudoku puzzle; used to check answers
 	char value; 				//the variable that stores the value to be added to the puzzle
 	int gameOver = 0;
+	bool saveLoaded;
 
 	string Select[]={"1","2","3"};
 
@@ -41,8 +42,8 @@ int main()
 
 
 
-	userInteract(gameBoard, solutionBoard, boardName);
-	readFile(gameBoard, solutionBoard, gameBoard_copy, boardName);
+	userInteract(gameBoard, solutionBoard, boardName, saveLoaded);
+	readFile(gameBoard, solutionBoard, gameBoard_copy, boardName, saveLoaded);
 
 	//displayArray(gameBoard, gameBoard_copy, solutionBoard);
 
@@ -63,7 +64,7 @@ int main()
 }
 
 //Opens one of the pre-made sudoku boards. Board number is chosen via rand() and constructed in main()
-void readFile(char gameBoard[][9], char solutionBoard[][9], char gameBoard_copy[][9], string boardName)
+void readFile(char gameBoard[][9], char solutionBoard[][9], char gameBoard_copy[][9], string boardName, bool &saveLoaded)
 {
 
 	ifstream fin; //declare file input
@@ -74,8 +75,6 @@ void readFile(char gameBoard[][9], char solutionBoard[][9], char gameBoard_copy[
 
 	string infileName = "Boards/sudoku_" + boardName +".txt";
 	string solution_path = "Solutions/solution_" + boardName +".txt";
-
-	cout<<infileName<<endl;
 
 	fin.open(infileName);
 	solution.open(solution_path);
@@ -106,17 +105,27 @@ void readFile(char gameBoard[][9], char solutionBoard[][9], char gameBoard_copy[
 	{
 		for (int column = 0; column < 9; column++) //fill for column
 		{
-			fin >> gameBoard[row][column];
-			solution >> solutionBoard[row][column];
-			gameBoard_copy[row][column] = gameBoard[row][column]; //used to check where values can be placed.
-																  
-			if(gameBoard[row][column] == '0') //if there is a 0
+			if (saveLoaded != true)
 			{
-				gameBoard[row][column] = ' '; //display as a gap, rather than a 0
-			}								  //These gaps are the places users can place values.
-
+				fin >> gameBoard[row][column];
+				solution >> solutionBoard[row][column];
+				gameBoard_copy[row][column] = gameBoard[row][column]; //used to check where values can be placed.
+																  
+				if(gameBoard[row][column] == '0') //if there is a 0
+				{
+					gameBoard[row][column] = ' '; //display as a gap, rather than a 0
+				}
+								  //These gaps are the places users can place values.
+			}
+				else
+				{
+				fin >> gameBoard_copy[row][column];
+				solution >> solutionBoard[row][column];
+				}
+					
+			}
 		}
-	}
+	
 
 	cout<<"\nBoard successfully loaded!\n"<<endl;
 	cin.ignore();
@@ -127,7 +136,7 @@ void readFile(char gameBoard[][9], char solutionBoard[][9], char gameBoard_copy[
 }
 
 //works as a main menu sort of function
-void userInteract(char gameBoard[][9], char solutionBoard[][9], string &boardName)
+void userInteract(char gameBoard[][9], char solutionBoard[][9], string &boardName, bool &saveLoaded)
 {
 	string choose_str;
 	int choose;
@@ -153,7 +162,7 @@ void userInteract(char gameBoard[][9], char solutionBoard[][9], string &boardNam
 				break;
 
 			case 2:
-				loadSave (gameBoard, solutionBoard, boardName);
+				loadSave (gameBoard, solutionBoard, boardName, saveLoaded);
 				break;
 			case 3:
  				cout << string(100, '\n' );
@@ -165,7 +174,7 @@ void userInteract(char gameBoard[][9], char solutionBoard[][9], string &boardNam
 				cin.ignore();
 				cout<<"\nDon't worry; I'll tell you if you make a mistake! Good luck!\n";
 				cin.ignore();
-				userInteract(gameBoard, solutionBoard, boardName);
+				userInteract(gameBoard, solutionBoard, boardName, saveLoaded);
 				break;
 			case 4:
 				exit(0);
@@ -490,7 +499,7 @@ int displayArray(char gameBoard[][9], char gameBoard_copy[][9], char solutionBoa
 
 //prompts the user to enter the path to his/her save file.
 //The tricky part is having the parsing the board number from the string so it knows which solution board to use.
-bool loadSave (char gameBoard[][9], char solutionBoard[][9], string &boardName)
+bool loadSave (char gameBoard[][9], char solutionBoard[][9], string &boardName, bool &saveLoaded)
 {
 	string path = "";
 	string new_path;
@@ -498,6 +507,7 @@ bool loadSave (char gameBoard[][9], char solutionBoard[][9], string &boardName)
 	string solution = "Solutions/solution_";
 	char numbers[] = {'1','2','3'};
 
+	ifstream fin;
 	ifstream test;
 
 	cout << string( 100, '\n' );
@@ -506,6 +516,20 @@ bool loadSave (char gameBoard[][9], char solutionBoard[][9], string &boardName)
 	while (path == "") getline(cin, path);
 	path_length = path.length();
 
+	fin.open(path);
+
+
+	for (int i = 0; i < 9; i++)
+	{
+		for (int j = 0; j < 9; j++)
+		{
+			fin >> gameBoard[i][j];
+			if ( gameBoard[i][j] == '0') gameBoard[i][j] = ' ';
+		}
+	}
+
+	fin.close();
+			
 	//looks for occurences of board number in the path variable
 	for (int i = 0; i < 3; i++) 
 	{
@@ -525,8 +549,11 @@ bool loadSave (char gameBoard[][9], char solutionBoard[][9], string &boardName)
   	if (!test.is_open())
   	{
   		cout << "Opening unsuccessful."<<endl;
-  		loadSave (gameBoard, solutionBoard, boardName);
+  		loadSave (gameBoard, solutionBoard, boardName, saveLoaded);
   	}
+
+  	saveLoaded = true;
+
 return true;
 }
 
